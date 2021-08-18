@@ -1,0 +1,16 @@
+#!/bin/bash
+
+LAYERS="conv1_a conv1_b conv2_a conv2_b conv3_a conv3_b conv4_a conv4_b conv5_a conv5_b pool1_a pool1_b pool2_a pool2_b pool3_a pool3_b fc1 fc2 fc3" #nn layers
+PREV="conv0"   #starting layer
+nn="l4_alex_2" #output dir
+conf="l4.cfg"  #config file
+for i in $LAYERS
+do
+   #echo "s/$PREV/$i/g"
+   sed -i "s/$PREV/$i/g" tests/$conf
+   #cat tests/vault_1node.cfg
+   build/opt/zsim tests/$conf
+   mkdir zsim-simulations/$nn/$i
+   mv heartbeat out.cfg zsim-cmp.h5 zsim-ev.h5 zsim.h5 zsim.out zsim-simulations/$nn/$i
+   PREV=$i
+done
